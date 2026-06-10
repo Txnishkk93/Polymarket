@@ -11,7 +11,7 @@ const app = express()
 app.use(express.json())
 app.use(cors())
 
-app.post("signup", async (req, res) => {
+app.post("/signup", async (req, res) => {
     const { email, password } = req.body;
 
     const existingUser = await prisma.user.findUnique({
@@ -24,12 +24,12 @@ app.post("signup", async (req, res) => {
         })
     }
 
-    const hashedpassowrd = await bcrypt.hash(password, 10);
+    const hashedpassword = await bcrypt.hash(password, 10);
 
     const user = await prisma.user.create({
         data: {
             email,
-            password
+            password:hashedpassword
         }
     })
     res.json({
@@ -39,30 +39,32 @@ app.post("signup", async (req, res) => {
 })
 
 app.post("/login", async (req, res) => {
-    const {email,password}=req.body
+    const { email, password } = req.body;
 
-    const user=await prisma.user.findUnique({
-        where:{email},
-    })
-    if(!user){
-        return res.status(401).json({
-            message:"Invalid credentials"
-        })
+    // 1. Find user by email only
+    const user = await prisma.user.findUnique({
+        where: { email },
+    });
+
+    if (!user) {
+        return res.status(401).json({ message: "Invalid credentials" });
     }
 
-    const validPassword=await bcrypt.compare(password,user.password)
-    if(!validPassword){
-        return res.status(401).json({
-            message:"Invalid credentials"
-        })
+    // 2. Compare provided password against stored hash
+    const validPassword = await bcrypt.compare(password, user.password);
+    if (!validPassword) {
+        return res.status(401).json({ message: "Invalid credentials" });
     }
-    const token=jwt.sign(
-        {
-            id:user.id,
-            email:user.email,
-        }
-    )
-})
+
+    // 3. Sign token using the DB user's id
+    const token = jwt.sign(
+        { id: user.id, email: user.email },
+        process.env.JWT_SECRET!,
+        { expiresIn: "7d" }
+    );
+
+    res.json({ token });
+});
 
 app.post("/buy", async (req, res) => {
     const { marketId } = req.body;
@@ -91,7 +93,6 @@ app.post("/buy", async (req, res) => {
     });
 });
 
-
 app.post("/market", async (req, res) => {
     const { title, description, resolutionDescription } = req.body;
 
@@ -111,9 +112,6 @@ app.post("/market", async (req, res) => {
     });
 });
 
-
-
-
 app.get("/markets", async (req, res) => {
     try {
         const markets = await prisma.market.findMany();
@@ -130,11 +128,30 @@ app.get("/markets", async (req, res) => {
     }
 });
 
-app.post("/sell", middleware, (req, res) => { })
-app.post("/merge", middleware, (req, res) => { })
-app.post("/split", middleware, (req, res) => { })
-app.post("/balance", middleware, (req, res) => { })
-app.post("/positions", middleware, (req, res) => { })
-app.post("/history", middleware, (req, res) => { })
+app.post("/sell", middleware, async (req, res) => {
+    res.json({ message: "sell" });
+});
 
-app.listen(3000)
+app.post("/merge", middleware, async (req, res) => {
+    res.json({ message: "merge" });
+});
+
+app.post("/split", middleware, async (req, res) => {
+    res.json({ message: "split" });
+});
+
+app.get("/balance", middleware, async (req, res) => {
+    res.json({ message: "balance" });
+});
+
+app.get("/positions", middleware, async (req, res) => {
+    res.json({ message: "positions" });
+});
+
+app.get("/history", middleware, async (req, res) => {
+    res.json({ message: "history" });
+});
+
+app.listen(3000, () => {
+    console.log("Server is running on http://localhost:3000")
+})

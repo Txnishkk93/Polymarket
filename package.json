@@ -25,6 +25,7 @@
     "@prisma/client": "^7.8.0",
     "@supabase/supabase-js": "^2.108.1",
     "dotenv": "^17.4.2",
-    "prisma": "^7.8.0"
+    "prisma": "^7.8.0",
+    "supabase": "^2.105.0"
   }
 }

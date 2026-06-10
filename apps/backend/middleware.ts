@@ -1,20 +1,39 @@
 import type { Request, Response, NextFunction } from "express";
-import { createClient } from "@supabase/supabase-js";
+import jwt from "jsonwebtoken";
 
-const supabase = createClient("https://gmlvrpqskhosmoftqiyo.supabase.co", process.env.SUPABASE_SECRET_KEY!)
+export interface AuthRequest extends Request {
+  user?: any;
+}
 
-export async function middleware(req: Request, res: Response, next: NextFunction) {
+export async function middleware(
+  req: AuthRequest,
+  res: Response,
+  next: NextFunction
+) {
+  const authHeader = req.headers.authorization;
 
-    const token = req.headers.authorization
-    try {
-        const { data: { user }, error } = await supabase.auth.getUser(token)
-        if (error || !user) {
-            res.status(403).json({message:"Incorrect credentials"})
-            return
-        }
-        console.log(user)
-        next()
-    } catch (e) {
-        res.status(403).json({message:"Incorrect credentials"})
-    }
+  if (!authHeader) {
+    return res.status(403).json({
+      message: "Token missing",
+    });
+  }
+
+  const token = authHeader.startsWith("Bearer ")
+    ? authHeader.split(" ")[1]
+    : authHeader;
+
+  try {
+    const decoded = jwt.verify(
+      token,
+      process.env.JWT_SECRET!
+    );
+
+    req.user = decoded;
+
+    next();
+  } catch (error) {
+    return res.status(403).json({
+      message: "Invalid token",
+    });
+  }
 }

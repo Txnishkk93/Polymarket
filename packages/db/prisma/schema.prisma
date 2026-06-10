@@ -1,10 +1,5 @@
-// This is your Prisma schema file,
-// learn more about it in the docs: https://pris.ly/d/prisma-schema
-
-// Get a free hosted Postgres database in seconds: `npx create-db`
-
 generator client {
-  provider = "prisma-client"
+  provider = "prisma-client-js"
   output   = "../generated/prisma"
 }
 
@@ -15,9 +10,11 @@ datasource db {
 model User {
   id         String         @id @default(uuid())
   address    String         @unique
-  usdBalance Int 
-  positions  Position[]
+  usdBalance Int
   orders     OrderHistory[]
+  positions  Position[]
+  email      String         @unique
+  password   String
 
   @@index([address])
 }
@@ -30,9 +27,9 @@ model Market {
   yesOrderbook          Json
   noOrderbook           Json
   totalQty              Int
-  positions             Position[]
-  orders                OrderHistory[]
   resolution            PositionType?
+  orders                OrderHistory[]
+  positions             Position[]
 }
 
 model Position {
@@ -40,9 +37,9 @@ model Position {
   userId   String
   marketId String
   type     PositionType
-  user     User         @relation(fields: [userId], references: [id])
-  market   Market       @relation(fields: [marketId], references: [id])
   qty      Int
+  market   Market       @relation(fields: [marketId], references: [id])
+  user     User         @relation(fields: [userId], references: [id])
 
   @@unique([userId, marketId, type])
 }
@@ -54,9 +51,8 @@ model OrderHistory {
   price     Int
   userId    String
   marketId  String
-
-  user   User   @relation(fields: [userId], references: [id])
-  market Market @relation(fields: [marketId], references: [id])
+  market    Market    @relation(fields: [marketId], references: [id])
+  user      User      @relation(fields: [userId], references: [id])
 }
 
 enum OrderType {

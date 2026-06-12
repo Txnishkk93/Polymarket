@@ -9,7 +9,7 @@ import { Button } from "./ui/Button";
 import { Search, LogOut, Layers, LogIn, UserPlus, Wallet, Sparkles } from "lucide-react";
 
 export const Header: React.FC = () => {
-  const { isAuthenticated, balance, logout } = useAuth();
+  const { isAuthenticated, balance, logout, loading } = useAuth();
   const searchParams = useSearchParams();
   const pathname = usePathname();
   const router = useRouter();
@@ -62,54 +62,56 @@ export const Header: React.FC = () => {
 
         {/* Auth details & navigation links */}
         <div className="flex items-center gap-3">
-          {isAuthenticated ? (
-            <>
-              <Link
-                href="/portfolio"
-                className="flex items-center gap-1.5 text-xs text-text-secondary hover:text-white transition-colors py-1.5 px-3 rounded-lg hover:bg-surface border border-transparent hover:border-border font-medium"
-              >
-                <Layers className="h-4 w-4 text-[#2468e4]" />
-                <span className="hidden md:inline">Dashboard</span>
-              </Link>
-              
-              <div className="text-xs bg-surface border border-border px-3 py-1.5 rounded-lg flex items-center gap-2">
-                <Wallet className="h-3.5 w-3.5 text-[#2468e4]" />
-                <span className="hidden sm:inline text-text-secondary">Balance:</span>
-                <span className="font-bold text-white">${balance.toFixed(2)}</span>
-              </div>
+          {!loading && (
+            isAuthenticated ? (
+              <>
+                <Link
+                  href="/portfolio"
+                  className="flex items-center gap-1.5 text-xs text-text-secondary hover:text-white transition-colors py-1.5 px-3 rounded-lg hover:bg-surface border border-transparent hover:border-border font-medium"
+                >
+                  <Layers className="h-4 w-4 text-[#2468e4]" />
+                  <span className="hidden md:inline">Dashboard</span>
+                </Link>
+                
+                <div className="text-xs bg-surface border border-border px-3 py-1.5 rounded-lg flex items-center gap-2">
+                  <Wallet className="h-3.5 w-3.5 text-[#2468e4]" />
+                  <span className="hidden sm:inline text-text-secondary">Balance:</span>
+                  <span className="font-bold text-white">${balance.toFixed(2)}</span>
+                </div>
 
-              <Link href="/portfolio?tab=deposit">
-                <Button variant="purple" size="sm" className="bg-[#2468e4] hover:bg-[#1a56cd] text-xs font-bold py-1.5 px-3">
-                  <Sparkles className="h-3.5 w-3.5 mr-1" />
-                  <span>Deposit</span>
-                </Button>
-              </Link>
+                <Link href="/portfolio?tab=deposit">
+                  <Button variant="purple" size="sm" className="bg-[#2468e4] hover:bg-[#1a56cd] text-xs font-bold py-1.5 px-3">
+                    <Sparkles className="h-3.5 w-3.5 mr-1" />
+                    <span>Deposit</span>
+                  </Button>
+                </Link>
 
-              <Button
-                onClick={logout}
-                variant="ghost"
-                size="sm"
-                className="text-xs font-semibold py-1.5 px-3 hover:text-red-400 hover:bg-red-500/5"
-              >
-                <LogOut className="h-3.5 w-3.5 mr-1" />
-                <span className="hidden md:inline">Logout</span>
-              </Button>
-            </>
-          ) : (
-            <>
-              <Link href="/login">
-                <Button variant="ghost" size="sm" className="text-xs font-bold gap-1 hover:bg-surface">
-                  <LogIn className="h-3.5 w-3.5" />
-                  <span>Log In</span>
+                <Button
+                  onClick={logout}
+                  variant="ghost"
+                  size="sm"
+                  className="text-xs font-semibold py-1.5 px-3 hover:text-red-400 hover:bg-red-500/5"
+                >
+                  <LogOut className="h-3.5 w-3.5 mr-1" />
+                  <span className="hidden md:inline">Logout</span>
                 </Button>
-              </Link>
-              <Link href="/signup">
-                <Button variant="purple" size="sm" className="bg-[#2468e4] hover:bg-[#1a56cd] text-xs font-bold gap-1">
-                  <UserPlus className="h-3.5 w-3.5" />
-                  <span>Sign Up</span>
-                </Button>
-              </Link>
-            </>
+              </>
+            ) : (
+              <>
+                <Link href="/login">
+                  <Button variant="ghost" size="sm" className="text-xs font-bold gap-1 hover:bg-surface">
+                    <LogIn className="h-3.5 w-3.5" />
+                    <span>Log In</span>
+                  </Button>
+                </Link>
+                <Link href="/signup">
+                  <Button variant="purple" size="sm" className="bg-[#2468e4] hover:bg-[#1a56cd] text-xs font-bold gap-1">
+                    <UserPlus className="h-3.5 w-3.5" />
+                    <span>Sign Up</span>
+                  </Button>
+                </Link>
+              </>
+            )
           )}
         </div>
       </div>

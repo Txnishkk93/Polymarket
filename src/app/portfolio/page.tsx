@@ -600,14 +600,18 @@ function PortfolioContent() {
   );
 }
 
+import { ProtectedRoute } from "../../components/ProtectedRoute";
+
 export default function PortfolioPage() {
   return (
-    <Suspense fallback={
-      <div className="min-h-[70vh] flex items-center justify-center">
-        <div className="animate-spin rounded-full h-10 w-10 border-t-2 border-b-2 border-yes"></div>
-      </div>
-    }>
-      <PortfolioContent />
-    </Suspense>
+    <ProtectedRoute>
+      <Suspense fallback={
+        <div className="min-h-[70vh] flex items-center justify-center">
+          <div className="animate-spin rounded-full h-10 w-10 border-t-2 border-b-2 border-yes"></div>
+        </div>
+      }>
+        <PortfolioContent />
+      </Suspense>
+    </ProtectedRoute>
   );
 }

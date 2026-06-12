@@ -17,6 +17,13 @@ import {
 const app = express();
 const PORT = 3000;
 
+app.use((req, res, next) => {
+    if (req.url.startsWith("/api")) {
+        req.url = req.url.slice(4);
+    }
+    next();
+});
+
 app.use(express.json());
 app.use(cors());
 

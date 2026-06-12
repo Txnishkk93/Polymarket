@@ -1145,6 +1145,10 @@ if (!process.env.JWT_SECRET) {
     throw new Error("JWT_SECRET environment variable is required");
 }
 
-app.listen(PORT, () => {
-    console.log(`Server running on http://localhost:${PORT}`);
-});
+if (!process.env.VERCEL) {
+    app.listen(PORT, () => {
+        console.log(`Server running on http://localhost:${PORT}`);
+    });
+}
+
+export default app;

@@ -16,16 +16,6 @@
       "static/chunks/main-app.js",
       "static/chunks/app/api/markets/route.js"
     ],
-    "/login/page": [
-      "static/chunks/webpack.js",
-      "static/chunks/main-app.js",
-      "static/chunks/app/login/page.js"
-    ],
-    "/api/login/route": [
-      "static/chunks/webpack.js",
-      "static/chunks/main-app.js",
-      "static/chunks/app/api/login/route.js"
-    ],
     "/api/balance/route": [
       "static/chunks/webpack.js",
       "static/chunks/main-app.js",

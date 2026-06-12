@@ -57,6 +57,54 @@ export interface SplitMergePayload {
   amount: number;
 }
 
+// Helper utility functions for calculations
+export function derivePrices(yesOrderbook: any, noOrderbook: any) {
+  let bestYesAsk: number | null = null;
+  if (yesOrderbook && typeof yesOrderbook === "object") {
+    const prices = Object.keys(yesOrderbook)
+      .filter((p) => yesOrderbook[p]?.availableQty > 0)
+      .map(Number);
+    if (prices.length > 0) {
+      bestYesAsk = Math.min(...prices);
+    }
+  }
+
+  let bestNoAsk: number | null = null;
+  if (noOrderbook && typeof noOrderbook === "object") {
+    const prices = Object.keys(noOrderbook)
+      .filter((p) => noOrderbook[p]?.availableQty > 0)
+      .map(Number);
+    if (prices.length > 0) {
+      bestNoAsk = Math.min(...prices);
+    }
+  }
+
+  let yesPrice = 50;
+  let noPrice = 50;
+
+  if (bestYesAsk !== null && bestNoAsk !== null) {
+    yesPrice = bestYesAsk;
+    noPrice = bestNoAsk;
+  } else if (bestYesAsk !== null) {
+    yesPrice = bestYesAsk;
+    noPrice = 100 - bestYesAsk;
+  } else if (bestNoAsk !== null) {
+    noPrice = bestNoAsk;
+    yesPrice = 100 - bestNoAsk;
+  }
+
+  return { yesPrice, noPrice };
+}
+
+export function getCategory(title: string): string {
+  const t = title.toLowerCase();
+  if (t.includes("bitcoin") || t.includes("ethereum") || t.includes("crypto")) return "Crypto";
+  if (t.includes("ai") || t.includes("turing") || t.includes("spacex") || t.includes("mars") || t.includes("tech")) return "Tech";
+  if (t.includes("covid") || t.includes("vaccine") || t.includes("science") || t.includes("health")) return "Science";
+  if (t.includes("election") || t.includes("president") || t.includes("politics") || t.includes("will")) return "Politics";
+  return "Trending";
+}
+
 // API functions
 export async function getMarkets() {
   const response = await apiClient.get<{ markets: Market[] }>("/markets");

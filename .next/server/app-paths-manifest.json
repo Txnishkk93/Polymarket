@@ -1,0 +1,20 @@
+{
+  "/_not-found/page": "app/_not-found/page.js",
+  "/api/login/route": "app/api/login/route.js",
+  "/api/merge/route": "app/api/merge/route.js",
+  "/api/offramp/route": "app/api/offramp/route.js",
+  "/api/onramp/route": "app/api/onramp/route.js",
+  "/api/order/route": "app/api/order/route.js",
+  "/api/split/route": "app/api/split/route.js",
+  "/api/signup/route": "app/api/signup/route.js",
+  "/api/balance/route": "app/api/balance/route.js",
+  "/api/history/route": "app/api/history/route.js",
+  "/api/market/route": "app/api/market/route.js",
+  "/api/positions/route": "app/api/positions/route.js",
+  "/api/markets/route": "app/api/markets/route.js",
+  "/page": "app/page.js",
+  "/market/[id]/page": "app/market/[id]/page.js",
+  "/login/page": "app/login/page.js",
+  "/signup/page": "app/signup/page.js",
+  "/portfolio/page": "app/portfolio/page.js"
+}
